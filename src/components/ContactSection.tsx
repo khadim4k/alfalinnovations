@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -10,11 +12,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Send, MapPin, Phone, Mail } from "lucide-react";
+import { Send, MapPin, Phone, Mail, MessageCircle } from "lucide-react";
+import { getWhatsAppLink, PHONE_NUMBER, getGreeting } from "./WhatsAppButton";
 
 const ContactSection = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [contactMethod, setContactMethod] = useState<"email" | "whatsapp">("email");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,9 +29,42 @@ const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
+    if (contactMethod === "whatsapp") {
+      // Build WhatsApp message with form data
+      const greeting = getGreeting();
+      const domainLabels: Record<string, string> = {
+        "export-import": "Export & Import",
+        "agriculture": "Agriculture",
+        "water-treatment": "Traitement d'eau",
+        "other": "Autre",
+      };
+      
+      const whatsappMessage = `${greeting} !
 
-    // Simulate form submission
+Je suis *${formData.name}*.
+📧 Email: ${formData.email}
+📱 Téléphone: ${formData.phone || "Non renseigné"}
+🏢 Domaine d'intérêt: ${domainLabels[formData.domain] || formData.domain}
+
+📝 Message:
+${formData.message}
+
+Merci de me recontacter.`;
+
+      const whatsappUrl = getWhatsAppLink(whatsappMessage);
+      window.open(whatsappUrl, "_blank");
+      
+      toast({
+        title: "Redirection vers WhatsApp",
+        description: "Votre message est prêt à être envoyé.",
+      });
+      
+      return;
+    }
+
+    // Email submission
+    setIsSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     toast({
@@ -37,6 +74,10 @@ const ContactSection = () => {
 
     setFormData({ name: "", email: "", phone: "", domain: "", message: "" });
     setIsSubmitting(false);
+  };
+
+  const formatPhoneDisplay = (phone: string) => {
+    return `+${phone.slice(0, 3)} ${phone.slice(3, 5)} ${phone.slice(5, 8)} ${phone.slice(8, 10)} ${phone.slice(10)}`;
   };
 
   return (
@@ -69,9 +110,7 @@ const ContactSection = () => {
                   <div>
                     <p className="font-medium text-foreground">Adresse</p>
                     <p className="text-muted-foreground">
-                      123 Avenue de l'Innovation
-                      <br />
-                      75001 Paris, France
+                      Dakar, Sénégal
                     </p>
                   </div>
                 </div>
@@ -82,7 +121,29 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Téléphone</p>
-                    <p className="text-muted-foreground">+33 1 23 45 67 89</p>
+                    <a 
+                      href={`tel:+${PHONE_NUMBER}`}
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {formatPhoneDisplay(PHONE_NUMBER)}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-lg bg-[#25D366]/10 flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">WhatsApp</p>
+                    <a 
+                      href={getWhatsAppLink()}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-[#25D366] transition-colors"
+                    >
+                      {formatPhoneDisplay(PHONE_NUMBER)}
+                    </a>
                   </div>
                 </div>
 
@@ -92,9 +153,12 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Email</p>
-                    <p className="text-muted-foreground">
+                    <a 
+                      href="mailto:contact@alfalinnovation.com"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
                       contact@alfalinnovation.com
-                    </p>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -107,6 +171,39 @@ const ContactSection = () => {
               onSubmit={handleSubmit}
               className="bg-card rounded-2xl p-6 md:p-8 shadow-card"
             >
+              {/* Contact Method Selection */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-foreground mb-3">
+                  Comment souhaitez-vous être contacté ?
+                </label>
+                <RadioGroup
+                  value={contactMethod}
+                  onValueChange={(value) => setContactMethod(value as "email" | "whatsapp")}
+                  className="flex flex-wrap gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="email" id="email-method" />
+                    <Label 
+                      htmlFor="email-method" 
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <Mail className="w-4 h-4" />
+                      Par Email
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="whatsapp" id="whatsapp-method" />
+                    <Label 
+                      htmlFor="whatsapp-method"
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                      Par WhatsApp
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label
@@ -159,7 +256,7 @@ const ContactSection = () => {
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="+33 6 12 34 56 78"
+                    placeholder="+221 77 123 45 67"
                     value={formData.phone}
                     onChange={(e) =>
                       setFormData({ ...formData, phone: e.target.value })
@@ -216,11 +313,20 @@ const ContactSection = () => {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full sm:w-auto"
+                className={`w-full sm:w-auto ${
+                  contactMethod === "whatsapp" 
+                    ? "bg-[#25D366] hover:bg-[#128C7E] hover:shadow-none" 
+                    : ""
+                }`}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
                   "Envoi en cours..."
+                ) : contactMethod === "whatsapp" ? (
+                  <>
+                    Envoyer via WhatsApp
+                    <MessageCircle className="w-4 h-4" />
+                  </>
                 ) : (
                   <>
                     Envoyer

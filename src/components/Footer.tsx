@@ -1,4 +1,5 @@
-import { Facebook, Linkedin, Twitter, Instagram } from "lucide-react";
+import { Facebook, Linkedin, Twitter, Instagram, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { getWhatsAppLink, PHONE_NUMBER } from "./WhatsAppButton";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -9,6 +10,10 @@ const Footer = () => {
     { icon: Twitter, href: "#", label: "Twitter" },
     { icon: Instagram, href: "#", label: "Instagram" },
   ];
+
+  const formatPhoneDisplay = (phone: string) => {
+    return `+${phone.slice(0, 3)} ${phone.slice(3, 5)} ${phone.slice(5, 8)} ${phone.slice(8, 10)} ${phone.slice(10)}`;
+  };
 
   return (
     <footer className="bg-foreground text-primary-foreground">
@@ -43,12 +48,12 @@ const Footer = () => {
             <h4 className="font-semibold text-lg mb-4">Liens Rapides</h4>
             <ul className="space-y-3">
               {[
-                { label: "Accueil", href: "#accueil" },
-                { label: "Nos Domaines", href: "#domaines" },
-                { label: "Processus", href: "#processus" },
-                { label: "Témoignages", href: "#temoignages" },
-                { label: "FAQ", href: "#faq" },
-                { label: "Contact", href: "#contact" },
+                { label: "Accueil", href: "/#accueil" },
+                { label: "Export & Import", href: "/domaines/export-import" },
+                { label: "Agriculture", href: "/domaines/agriculture" },
+                { label: "Traitement d'eau", href: "/domaines/traitement-eau" },
+                { label: "FAQ", href: "/#faq" },
+                { label: "Contact", href: "/#contact" },
               ].map((link) => (
                 <li key={link.label}>
                   <a
@@ -65,18 +70,33 @@ const Footer = () => {
           {/* Contact */}
           <div>
             <h4 className="font-semibold text-lg mb-4">Contact</h4>
-            <ul className="space-y-3 text-primary-foreground/70">
-              <li>123 Avenue de l'Innovation</li>
-              <li>75001 Paris, France</li>
-              <li>
+            <ul className="space-y-4 text-primary-foreground/70">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <span>Dakar, Sénégal</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <a
-                  href="tel:+33123456789"
+                  href={`tel:+${PHONE_NUMBER}`}
                   className="hover:text-primary transition-colors"
                 >
-                  +33 1 23 45 67 89
+                  {formatPhoneDisplay(PHONE_NUMBER)}
                 </a>
               </li>
-              <li>
+              <li className="flex items-start gap-3">
+                <MessageCircle className="w-5 h-5 text-[#25D366] flex-shrink-0 mt-0.5" />
+                <a
+                  href={getWhatsAppLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#25D366] transition-colors"
+                >
+                  WhatsApp
+                </a>
+              </li>
+              <li className="flex items-start gap-3">
+                <Mail className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                 <a
                   href="mailto:contact@alfalinnovation.com"
                   className="hover:text-primary transition-colors"
