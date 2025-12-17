@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg-new.jpg";
 
 const HeroSection = () => {
@@ -54,20 +54,20 @@ const HeroSection = () => {
             Innovation et Excellence
           </p>
 
-          {/* Services */}
+          {/* Services - Vertical layout */}
           <div
-            className="flex flex-wrap items-center justify-center gap-3 md:gap-6 mb-10 animate-fade-up"
+            className="flex flex-col items-center gap-2 mb-10 animate-fade-up"
             style={{ animationDelay: "0.4s" }}
           >
-            {["Export & Import", "Agriculture", "Traitement d'eau"].map((service, index) => (
-              <span
-                key={service}
-                className="text-primary-foreground/70 text-base md:text-lg flex items-center gap-3"
-              >
-                {index > 0 && <span className="w-1.5 h-1.5 rounded-full bg-primary" />}
-                {service}
-              </span>
-            ))}
+            <span className="text-primary-foreground/80 text-lg md:text-xl">
+              Export & Import
+            </span>
+            <span className="text-primary-foreground/80 text-lg md:text-xl">
+              Agriculture
+            </span>
+            <span className="text-primary-foreground/80 text-lg md:text-xl">
+              Traitement d'eau
+            </span>
           </div>
 
           {/* CTA Buttons */}
@@ -93,17 +93,6 @@ const HeroSection = () => {
             </Button>
           </div>
         </div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-        <button
-          onClick={() => scrollToSection("#domaines")}
-          className="text-primary-foreground/60 hover:text-primary-foreground transition-colors"
-          aria-label="Défiler vers le bas"
-        >
-          <ChevronDown className="w-10 h-10" />
-        </button>
       </div>
 
       {/* Decorative elements */}

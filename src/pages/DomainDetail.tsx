@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { ArrowLeft, CheckCircle, Ship, Leaf, Droplets, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
@@ -116,6 +117,11 @@ const domainData = {
 const DomainDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const domain = slug ? domainData[slug as keyof typeof domainData] : null;
+
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   if (!domain) {
     return (

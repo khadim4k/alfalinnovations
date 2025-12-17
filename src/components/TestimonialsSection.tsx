@@ -1,4 +1,11 @@
 import { Star, Quote } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const testimonials = [
   {
@@ -47,46 +54,56 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <article
-              key={testimonial.name}
-              className="bg-card rounded-2xl p-6 md:p-8 shadow-card card-hover relative"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <Quote className="absolute top-6 right-6 w-10 h-10 text-primary/10" />
-              
-              <div className="flex gap-1 mb-4">
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-5 h-5 fill-primary text-primary"
-                  />
-                ))}
-              </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-4">
+            {testimonials.map((testimonial) => (
+              <CarouselItem key={testimonial.name} className="pl-4 md:basis-1/2">
+                <article className="bg-card rounded-2xl p-6 md:p-8 shadow-card card-hover relative h-full">
+                  <Quote className="absolute top-6 right-6 w-10 h-10 text-primary/10" />
+                  
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-5 h-5 fill-primary text-primary"
+                      />
+                    ))}
+                  </div>
 
-              <p className="text-foreground leading-relaxed mb-6 text-lg">
-                "{testimonial.content}"
-              </p>
+                  <p className="text-foreground leading-relaxed mb-6 text-lg">
+                    "{testimonial.content}"
+                  </p>
 
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary font-bold text-lg">
-                    {testimonial.name.charAt(0)}
-                  </span>
-                </div>
-                <div>
-                  <p className="font-semibold text-foreground">
-                    {testimonial.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {testimonial.company}
-                  </p>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-primary font-bold text-lg">
+                        {testimonial.name.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {testimonial.company}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="flex justify-center gap-4 mt-8">
+            <CarouselPrevious className="static translate-y-0 bg-primary text-primary-foreground hover:bg-primary/90 border-none" />
+            <CarouselNext className="static translate-y-0 bg-primary text-primary-foreground hover:bg-primary/90 border-none" />
+          </div>
+        </Carousel>
       </div>
     </section>
   );

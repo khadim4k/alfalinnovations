@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Send, MapPin, Phone, Mail, MessageCircle } from "lucide-react";
-import { getWhatsAppLink, PHONE_NUMBER, getGreeting } from "./WhatsAppButton";
+import { getWhatsAppLink, PHONE_NUMBER, buildWhatsAppMessage } from "./WhatsAppButton";
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -21,8 +21,6 @@ const ContactSection = () => {
   const [contactMethod, setContactMethod] = useState<"email" | "whatsapp">("email");
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
-    phone: "",
     domain: "",
     message: "",
   });
@@ -31,27 +29,7 @@ const ContactSection = () => {
     e.preventDefault();
     
     if (contactMethod === "whatsapp") {
-      // Build WhatsApp message with form data
-      const greeting = getGreeting();
-      const domainLabels: Record<string, string> = {
-        "export-import": "Export & Import",
-        "agriculture": "Agriculture",
-        "water-treatment": "Traitement d'eau",
-        "other": "Autre",
-      };
-      
-      const whatsappMessage = `${greeting} !
-
-Je suis *${formData.name}*.
-📧 Email: ${formData.email}
-📱 Téléphone: ${formData.phone || "Non renseigné"}
-🏢 Domaine d'intérêt: ${domainLabels[formData.domain] || formData.domain}
-
-📝 Message:
-${formData.message}
-
-Merci de me recontacter.`;
-
+      const whatsappMessage = buildWhatsAppMessage(formData);
       const whatsappUrl = getWhatsAppLink(whatsappMessage);
       window.open(whatsappUrl, "_blank");
       
@@ -72,7 +50,7 @@ Merci de me recontacter.`;
       description: "Nous vous répondrons dans les plus brefs délais.",
     });
 
-    setFormData({ name: "", email: "", phone: "", domain: "", message: "" });
+    setFormData({ name: "", domain: "", message: "" });
     setIsSubmitting(false);
   };
 
@@ -220,46 +198,6 @@ Merci de me recontacter.`;
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="h-12"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
-                    Email *
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    placeholder="votre@email.com"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    className="h-12"
-                  />
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
-                    Téléphone
-                  </label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+221 77 123 45 67"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
                     }
                     className="h-12"
                   />

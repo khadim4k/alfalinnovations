@@ -3,7 +3,6 @@ import { MessageCircle } from "lucide-react";
 const PHONE_NUMBER = "221784066315";
 
 const getGreeting = () => {
-  // Get current hour in Africa/Dakar timezone (UTC+0 / WAT)
   const now = new Date();
   const options: Intl.DateTimeFormatOptions = {
     hour: "numeric",
@@ -21,11 +20,37 @@ const getGreeting = () => {
   }
 };
 
+interface WhatsAppMessageData {
+  name: string;
+  domain: string;
+  message: string;
+}
+
+const buildWhatsAppMessage = (data: WhatsAppMessageData) => {
+  const greeting = getGreeting();
+  const domainLabels: Record<string, string> = {
+    "export-import": "Export & Import",
+    "agriculture": "Agriculture",
+    "water-treatment": "Traitement d'eau",
+    "other": "Autre",
+  };
+
+  return `${greeting},
+
+Je vous contacte depuis le site Alfalinnovation.
+
+Je suis ${data.name} et je suis intéressé(e) par vos services en ${domainLabels[data.domain] || data.domain}.
+
+${data.message}
+
+Merci de me recontacter.`;
+};
+
 const getWhatsAppLink = (customMessage?: string) => {
   const greeting = getGreeting();
   const defaultMessage =
     customMessage ||
-    `${greeting} ! Je vous contacte depuis le site Alfalinnovation. Je souhaite avoir des informations sur vos services.`;
+    `${greeting}, je vous contacte depuis le site Alfalinnovation. Je souhaite avoir des informations sur vos services.`;
   const encodedMessage = encodeURIComponent(defaultMessage);
   return `https://wa.me/${PHONE_NUMBER}?text=${encodedMessage}`;
 };
@@ -49,5 +74,5 @@ const WhatsAppButton = () => {
   );
 };
 
-export { getWhatsAppLink, PHONE_NUMBER, getGreeting };
+export { getWhatsAppLink, PHONE_NUMBER, getGreeting, buildWhatsAppMessage };
 export default WhatsAppButton;

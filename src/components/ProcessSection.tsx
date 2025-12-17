@@ -1,23 +1,18 @@
-import { Search, ClipboardList, CheckCircle } from "lucide-react";
-
 const steps = [
   {
     number: "01",
-    icon: Search,
     title: "Analyse des besoins",
     description:
       "Nous étudions en profondeur vos exigences et objectifs pour proposer des solutions parfaitement adaptées.",
   },
   {
     number: "02",
-    icon: ClipboardList,
     title: "Planification et exécution",
     description:
       "Notre équipe élabore un plan d'action détaillé et met en œuvre les solutions avec rigueur et professionnalisme.",
   },
   {
     number: "03",
-    icon: CheckCircle,
     title: "Livraison et suivi",
     description:
       "Nous assurons la livraison dans les délais et un suivi continu pour garantir votre entière satisfaction.",
@@ -49,15 +44,14 @@ const ProcessSection = () => {
             >
               {/* Connector Line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-border" />
+                <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-border" />
               )}
 
               <div className="relative mb-6">
-                <div className="w-32 h-32 mx-auto rounded-full bg-accent flex items-center justify-center relative overflow-hidden group-hover:shadow-glow transition-shadow duration-300">
-                  <span className="absolute text-6xl font-bold text-primary/10">
+                <div className="w-24 h-24 mx-auto rounded-full bg-accent flex items-center justify-center relative overflow-hidden group-hover:shadow-glow transition-shadow duration-300">
+                  <span className="text-4xl font-bold text-primary">
                     {step.number}
                   </span>
-                  <step.icon className="w-10 h-10 text-primary relative z-10" />
                 </div>
               </div>
 

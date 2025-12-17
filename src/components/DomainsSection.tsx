@@ -1,5 +1,13 @@
 import { Link } from "react-router-dom";
-import { Ship, Leaf, Droplets, ArrowRight } from "lucide-react";
+import { Ship, Leaf, Droplets, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import exportImportImg from "@/assets/export-import.jpg";
 import agricultureImg from "@/assets/agriculture.jpg";
 import waterTreatmentImg from "@/assets/water-treatment.jpg";
@@ -47,44 +55,54 @@ const DomainsSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {domains.map((domain, index) => (
-            <Link
-              to={`/domaines/${domain.slug}`}
-              key={domain.title}
-              className="group"
-            >
-              <article
-                className="bg-card rounded-2xl overflow-hidden shadow-card card-hover h-full"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="relative h-56 overflow-hidden">
-                  <img
-                    src={domain.image}
-                    alt={domain.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
-                  <div className="absolute bottom-4 left-4 w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-                    <domain.icon className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-card-foreground mb-3 group-hover:text-primary transition-colors">
-                    {domain.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed mb-4">
-                    {domain.description}
-                  </p>
-                  <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
-                    En savoir plus
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </div>
-              </article>
-            </Link>
-          ))}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-4">
+            {domains.map((domain) => (
+              <CarouselItem key={domain.title} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <Link
+                  to={`/domaines/${domain.slug}`}
+                  className="group block h-full"
+                >
+                  <article className="bg-card rounded-2xl overflow-hidden shadow-card card-hover h-full">
+                    <div className="relative h-56 overflow-hidden">
+                      <img
+                        src={domain.image}
+                        alt={domain.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+                      <div className="absolute bottom-4 left-4 w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+                        <domain.icon className="w-6 h-6 text-primary-foreground" />
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-card-foreground mb-3 group-hover:text-primary transition-colors">
+                        {domain.title}
+                      </h3>
+                      <p className="text-muted-foreground leading-relaxed mb-4">
+                        {domain.description}
+                      </p>
+                      <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                        En savoir plus
+                        <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </div>
+                  </article>
+                </Link>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="flex justify-center gap-4 mt-8">
+            <CarouselPrevious className="static translate-y-0 bg-primary text-primary-foreground hover:bg-primary/90 border-none" />
+            <CarouselNext className="static translate-y-0 bg-primary text-primary-foreground hover:bg-primary/90 border-none" />
+          </div>
+        </Carousel>
       </div>
     </section>
   );
