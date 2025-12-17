@@ -1,11 +1,4 @@
-import { Star, Quote } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { Star } from "lucide-react";
 
 const testimonials = [
   {
@@ -36,13 +29,63 @@ const testimonials = [
       "Une équipe à l'écoute qui comprend vraiment les enjeux de l'agriculture moderne. Collaboration excellente depuis 3 ans.",
     rating: 5,
   },
+  {
+    name: "Oumar Diallo",
+    company: "Dakar Import SARL",
+    content:
+      "Service exceptionnel et équipe très professionnelle. Ils ont facilité toutes nos opérations d'import avec efficacité.",
+    rating: 5,
+  },
+  {
+    name: "Claire Dubois",
+    company: "AquaPure Industries",
+    content:
+      "Installation rapide et support technique irréprochable. Notre système de traitement d'eau fonctionne parfaitement depuis 2 ans.",
+    rating: 5,
+  },
 ];
 
+const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] }) => (
+  <article className="flex-shrink-0 w-[320px] md:w-[400px] bg-card rounded-2xl p-6 md:p-8 shadow-card mx-4">
+    <div className="flex gap-1 mb-4">
+      {Array.from({ length: testimonial.rating }).map((_, i) => (
+        <Star
+          key={i}
+          className="w-4 h-4 fill-primary text-primary"
+        />
+      ))}
+    </div>
+
+    <p className="text-foreground leading-relaxed mb-6 text-base">
+      "{testimonial.content}"
+    </p>
+
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+        <span className="text-primary font-bold text-sm">
+          {testimonial.name.charAt(0)}
+        </span>
+      </div>
+      <div>
+        <p className="font-semibold text-foreground text-sm">
+          {testimonial.name}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {testimonial.company}
+        </p>
+      </div>
+    </div>
+  </article>
+);
+
 const TestimonialsSection = () => {
+  // Double the testimonials for seamless infinite scroll
+  const duplicatedTestimonials = [...testimonials, ...testimonials];
+
   return (
-    <section id="temoignages" className="section-padding bg-background">
+    <section id="temoignages" className="section-padding bg-background overflow-hidden">
       <div className="container-custom">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <span className="text-primary font-semibold text-sm uppercase tracking-wider">
             Témoignages
           </span>
@@ -53,57 +96,20 @@ const TestimonialsSection = () => {
             La satisfaction de nos clients est notre priorité absolue
           </p>
         </div>
+      </div>
 
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full"
-        >
-          <CarouselContent className="-ml-4">
-            {testimonials.map((testimonial) => (
-              <CarouselItem key={testimonial.name} className="pl-4 md:basis-1/2">
-                <article className="bg-card rounded-2xl p-6 md:p-8 shadow-card card-hover relative h-full">
-                  <Quote className="absolute top-6 right-6 w-10 h-10 text-primary/10" />
-                  
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: testimonial.rating }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-5 h-5 fill-primary text-primary"
-                      />
-                    ))}
-                  </div>
-
-                  <p className="text-foreground leading-relaxed mb-6 text-lg">
-                    "{testimonial.content}"
-                  </p>
-
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <span className="text-primary font-bold text-lg">
-                        {testimonial.name.charAt(0)}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-foreground">
-                        {testimonial.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {testimonial.company}
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="flex justify-center gap-4 mt-8">
-            <CarouselPrevious className="static translate-y-0 bg-primary text-primary-foreground hover:bg-primary/90 border-none" />
-            <CarouselNext className="static translate-y-0 bg-primary text-primary-foreground hover:bg-primary/90 border-none" />
-          </div>
-        </Carousel>
+      {/* Infinite scroll container */}
+      <div className="relative w-full">
+        {/* Gradient masks for smooth edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+        
+        {/* Scrolling track */}
+        <div className="flex animate-scroll-left">
+          {duplicatedTestimonials.map((testimonial, index) => (
+            <TestimonialCard key={`${testimonial.name}-${index}`} testimonial={testimonial} />
+          ))}
+        </div>
       </div>
     </section>
   );
