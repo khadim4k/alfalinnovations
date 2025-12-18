@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
-const Header = () => {
+const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -10,45 +10,67 @@ const Header = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === '/' && location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        // Use a timeout to allow the page to render before scrolling
+        setTimeout(() => element.scrollIntoView({ behavior: 'smooth' }), 100);
+      }
+    }
+  }, [location]);
+
   const navLinks = [
-    { href: "#accueil", label: "Accueil" },
-    { href: "#domaines", label: "Nos Domaines" },
-    { href: "#processus", label: "Processus" },
-    { href: "#temoignages", label: "Témoignages" },
-    { href: "#faq", label: "FAQ" },
+    { href: "/", label: "Accueil" }, // Reste sur la page d'accueil
+    { href: "/#domaines", label: "Services" },
+    { href: "/#processus", label: "Processus" },
+    { href: "/portfolio", label: "Portfolio" }, // Redirige vers la page Portfolio
+    { href: "/#temoignages", label: "Témoignages" },
+    { href: "/#contact", label: "Contact" },
+    { href: "/#faq", label: "FAQ" },
+    ,
   ];
 
   const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+    const [path, hash] = href.split('#');
+    if (path && location.pathname !== path) {
+      navigate(path + (hash ? '#' + hash : ''));
+    } else {
+      const element = document.querySelector(hash ? '#' + hash : 'body');
+      element?.scrollIntoView({ behavior: "smooth" });
     }
     setIsMobileMenuOpen(false);
   };
 
+  const isHomePage = location.pathname === '/';
+
   return (
-    <header
+      <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-soft py-3"
-          : "bg-transparent py-5"
+        isScrolled || !isHomePage
+          ? "bg-black/50 backdrop-blur-md shadow-sm py-2 border-b border-white/10"
+          : "bg-transparent py-4"
       }`}
     >
       <div className="container-custom flex items-center justify-between px-4 md:px-8">
         <a
-          href="#accueil"
+          href="/"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection("#accueil");
+            scrollToSection("/");
           }}
           className="flex items-center gap-2"
-        >
+        > 
           <span className={`text-2xl font-bold transition-colors duration-300 ${
-            isScrolled ? "text-primary" : "text-primary-foreground"
+            isScrolled || !isHomePage ? "text-white" : "text-white"
           }`}>
             Alfa<span className="text-primary">l</span>innovation
           </span>
@@ -65,19 +87,12 @@ const Header = () => {
                 scrollToSection(link.href);
               }}
               className={`text-sm font-medium transition-colors duration-300 hover:text-primary ${
-                isScrolled ? "text-foreground" : "text-primary-foreground/90"
+                isScrolled || !isHomePage ? "text-white/80" : "text-white/90"
               }`}
             >
               {link.label}
             </a>
           ))}
-          <Button
-            size="lg"
-            onClick={() => scrollToSection("#contact")}
-            className={isScrolled ? "" : "bg-primary-foreground text-primary hover:bg-primary-foreground/90"}
-          >
-            Nous contacter
-          </Button>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -87,9 +102,9 @@ const Header = () => {
           aria-label="Toggle menu"
         >
           {isMobileMenuOpen ? (
-            <X className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-primary-foreground"}`} />
+            <X className="w-6 h-6 text-white" />
           ) : (
-            <Menu className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-primary-foreground"}`} />
+            <Menu className="w-6 h-6 text-white" />
           )}
         </button>
       </div>
@@ -111,13 +126,6 @@ const Header = () => {
                 {link.label}
               </a>
             ))}
-            <Button
-              size="lg"
-              className="mt-2"
-              onClick={() => scrollToSection("#contact")}
-            >
-              Nous contacter
-            </Button>
           </nav>
         </div>
       )}

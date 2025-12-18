@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 
-const PHONE_NUMBER = "221784066315";
+const PHONE_NUMBER = "221764410598";
 
 const getGreeting = () => {
   const now = new Date();
@@ -35,22 +35,20 @@ const buildWhatsAppMessage = (data: WhatsAppMessageData) => {
     "other": "Autre",
   };
 
-  return `${greeting},
+  const interest = `Je suis intéressé(e) par vos activités en ${domainLabels[data.domain] || data.domain}.`;
 
+  return `${greeting}.
 Je vous contacte depuis le site Alfalinnovation.
-
-Je suis ${data.name} et je suis intéressé(e) par vos services en ${domainLabels[data.domain] || data.domain}.
-
-${data.message}
-
-Merci de me recontacter.`;
+Je suis ${data.name}.
+${data.domain ? interest + "\n\n" : ""}Message :
+${data.message}`;
 };
 
 const getWhatsAppLink = (customMessage?: string) => {
   const greeting = getGreeting();
   const defaultMessage =
     customMessage ||
-    `${greeting}, je vous contacte depuis le site Alfalinnovation. Je souhaite avoir des informations sur vos services.`;
+    `${greeting}, je vous contacte depuis le site Alfalinnovation. Je souhaite avoir des informations sur vos activités.`;
   const encodedMessage = encodeURIComponent(defaultMessage);
   return `https://wa.me/${PHONE_NUMBER}?text=${encodedMessage}`;
 };

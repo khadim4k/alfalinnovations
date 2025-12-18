@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Send, MapPin, Phone, Mail, MessageCircle } from "lucide-react";
-import { getWhatsAppLink, PHONE_NUMBER, buildWhatsAppMessage } from "./WhatsAppButton";
+import { getWhatsAppLink, PHONE_NUMBER, buildWhatsAppMessage, getGreeting } from "./WhatsAppButton";
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -27,28 +27,33 @@ const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setIsSubmitting(true);
+
     if (contactMethod === "whatsapp") {
       const whatsappMessage = buildWhatsAppMessage(formData);
       const whatsappUrl = getWhatsAppLink(whatsappMessage);
       window.open(whatsappUrl, "_blank");
-      
       toast({
         title: "Redirection vers WhatsApp",
         description: "Votre message est prêt à être envoyé.",
       });
-      
-      return;
+    } else { // email
+      const domainLabels: Record<string, string> = {
+        "export-import": "Export & Import",
+        "agriculture": "Agriculture",
+        "water-treatment": "Traitement d'eau",
+        "other": "Autre",
+      };
+      const greeting = getGreeting();
+      const subject = `Demande de devis via le site : ${domainLabels[formData.domain] || 'Non spécifié'}`;
+      const body = `${greeting},\n\nJe suis ${formData.name}.\n\n${formData.message}`;
+      const mailtoLink = `mailto:alfalinnovationsn@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailtoLink;
+      toast({
+        title: "Ouverture de votre client de messagerie",
+        description: "Votre message est prêt à être envoyé.",
+      });
     }
-
-    // Email submission
-    setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    toast({
-      title: "Message envoyé !",
-      description: "Nous vous répondrons dans les plus brefs délais.",
-    });
 
     setFormData({ name: "", domain: "", message: "" });
     setIsSubmitting(false);
@@ -87,9 +92,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Adresse</p>
-                    <p className="text-muted-foreground">
-                      Dakar, Sénégal
-                    </p>
+                    <p className="text-muted-foreground">Thiès, Sénégal</p>
                   </div>
                 </div>
 
@@ -99,12 +102,16 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Téléphone</p>
-                    <a 
-                      href={`tel:+${PHONE_NUMBER}`}
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {formatPhoneDisplay(PHONE_NUMBER)}
-                    </a>
+                    <div className="flex flex-col gap-1 text-muted-foreground">
+                      <a
+                        href="tel:+221764410598"
+                        className="hover:text-primary transition-colors"
+                      >+221 76 441 05 98</a>
+                      <a
+                        href="tel:+221339119579"
+                        className="hover:text-primary transition-colors"
+                      >+221 33 911 95 79</a>
+                    </div>
                   </div>
                 </div>
 
@@ -131,11 +138,11 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Email</p>
-                    <a 
-                      href="mailto:contact@alfalinnovation.com"
+                    <a
+                      href="mailto:alfalinnovationsn@outlook.com"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      contact@alfalinnovation.com
+                      alfalinnovationsn@outlook.com
                     </a>
                   </div>
                 </div>
@@ -188,13 +195,13 @@ const ContactSection = () => {
                     htmlFor="name"
                     className="block text-sm font-medium text-foreground mb-2"
                   >
-                    Nom complet *
+                    Prénom et Nom *
                   </label>
                   <Input
                     id="name"
                     type="text"
                     required
-                    placeholder="Votre nom"
+                    placeholder="Votre prénom et nom"
                     value={formData.name}
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })

@@ -1,14 +1,29 @@
-import { Facebook, Linkedin, Twitter, Instagram, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
+import { Facebook, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { getWhatsAppLink, PHONE_NUMBER } from "./WhatsAppButton";
+
+const TikTokIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/profile.php?id=100078674362168", label: "Facebook" },
+    { icon: TikTokIcon, href: "https://www.tiktok.com/@wanterguiservicesn?_r=1&_t=ZM-92Kp8Uf08q4", label: "TikTok" },
   ];
 
   const formatPhoneDisplay = (phone: string) => {
@@ -34,6 +49,8 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="w-10 h-10 rounded-lg bg-primary-foreground/10 flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
@@ -73,16 +90,18 @@ const Footer = () => {
             <ul className="space-y-4 text-primary-foreground/70">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <span>Dakar, Sénégal</span>
+                <span>Thiès, Sénégal</span>
               </li>
               <li className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <a
-                  href={`tel:+${PHONE_NUMBER}`}
-                  className="hover:text-primary transition-colors"
-                >
-                  {formatPhoneDisplay(PHONE_NUMBER)}
-                </a>
+                <Phone className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                <div className="flex flex-col gap-1">
+                  <a href="tel:+221764410598" className="hover:text-primary transition-colors">
+                    +221 76 441 05 98
+                  </a>
+                  <a href="tel:+221339119579" className="hover:text-primary transition-colors">
+                    +221 33 911 95 79
+                  </a>
+                </div>
               </li>
               <li className="flex items-start gap-3">
                 <MessageCircle className="w-5 h-5 text-[#25D366] flex-shrink-0 mt-0.5" />
@@ -96,12 +115,12 @@ const Footer = () => {
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <Mail className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                 <a
-                  href="mailto:contact@alfalinnovation.com"
+                  href="mailto:alfalinnovationsn@outlook.com"
                   className="hover:text-primary transition-colors"
                 >
-                  contact@alfalinnovation.com
+                  alfalinnovationsn@outlook.com
                 </a>
               </li>
             </ul>
@@ -109,12 +128,12 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-primary-foreground/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-8 border-t border-primary-foreground/10 pb-4">
+          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-4">
             <p className="text-primary-foreground/60 text-sm">
               © {currentYear} Alfalinnovation. Tous droits réservés.
             </p>
-            <div className="flex gap-6 text-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-x-6 gap-y-2 text-sm">
               <a
                 href="#"
                 className="text-primary-foreground/60 hover:text-primary transition-colors"
@@ -126,6 +145,13 @@ const Footer = () => {
                 className="text-primary-foreground/60 hover:text-primary transition-colors"
               >
                 Politique de confidentialité
+              </a>
+              <a
+                href="https://khadim4k.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-foreground/60 hover:text-primary transition-colors">
+                Développé par Khadim Guèye
               </a>
             </div>
           </div>

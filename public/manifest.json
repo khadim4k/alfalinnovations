@@ -1,0 +1,21 @@
+{
+  "name": "Alfalinnovation",
+  "short_name": "AFI",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#263238",
+  "theme_color": "#263238",
+  "description": "Al-Fal Innovation, basée à Thiès, est spécialisée en Export-Import, Agriculture et Traitement d’eau. Solutions complètes et adaptées aux besoins de nos clients.",
+  "icons": [
+    {
+      "src": "/favicon.jpeg?v=5",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/favicon.jpeg?v=5",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

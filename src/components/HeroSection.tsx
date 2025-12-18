@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import heroBg from "@/assets/hero-bg-new.jpg";
+import logo from "@/assets/favicon.jpeg";
 
 const HeroSection = () => {
   const scrollToSection = (href: string) => {
@@ -17,7 +18,7 @@ const HeroSection = () => {
     >
       {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroBg})` }}
       />
       
@@ -39,12 +40,16 @@ const HeroSection = () => {
           </div>
 
           {/* Main Title */}
-          <h1
-            className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-primary-foreground mb-6 leading-[1.1] animate-fade-up"
+          <div
+            className="flex justify-center mb-6 animate-fade-up"
             style={{ animationDelay: "0.2s" }}
           >
-            Alfa<span className="text-primary">l</span>innovation
-          </h1>
+            <img
+              src={logo}
+              alt="Alfalinnovation Logo"
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-primary/30 shadow-lg"
+            />
+          </div>
 
           {/* Subtitle */}
           <p
@@ -52,22 +57,12 @@ const HeroSection = () => {
             style={{ animationDelay: "0.3s" }}
           >
             Innovation et Excellence
-          </p>
-
-          {/* Services - Vertical layout */}
-          <div
-            className="flex flex-col items-center gap-2 mb-10 animate-fade-up"
-            style={{ animationDelay: "0.4s" }}
-          >
-            <span className="text-primary-foreground/80 text-lg md:text-xl">
-              Export & Import
-            </span>
-            <span className="text-primary-foreground/80 text-lg md:text-xl">
-              Agriculture
-            </span>
-            <span className="text-primary-foreground/80 text-lg md:text-xl">
-              Traitement d'eau
-            </span>
+          </p>          
+          <div 
+            className="text-xl md:text-2xl text-primary-foreground/80 mb-10 animate-fade-up"
+            style={{ animationDelay: "0.4s" }}>
+            Solutions en Export-Import, Agriculture et Traitement d'eau.
+            <p></p>
           </div>
 
           {/* CTA Buttons */}

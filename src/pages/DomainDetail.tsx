@@ -1,127 +1,58 @@
-import { useParams, Link } from "react-router-dom";
-import { useEffect } from "react";
-import { ArrowLeft, CheckCircle, Ship, Leaf, Droplets, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { ArrowLeft, CheckCircle, ArrowRight, Download, Eye } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
-import exportImportImg from "@/assets/export-import.jpg";
-import agricultureImg from "@/assets/agriculture.jpg";
-import waterTreatmentImg from "@/assets/water-treatment.jpg";
+import { domainData, Domain } from "@/pages/domaines";
+import ImageGallery from "@/pages/ImageGallery";
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import CatalogueDocument from '@/components/CatalogueDocument';
 
-const domainData = {
-  "export-import": {
-    title: "Export & Import",
-    subtitle: "Solutions logistiques internationales",
-    icon: Ship,
-    image: exportImportImg,
-    description:
-      "Alfalinnovation facilite vos échanges commerciaux à travers le monde. Notre expertise en logistique internationale vous garantit des solutions fiables, rapides et économiques pour l'import et l'export de vos marchandises.",
-    services: [
-      "Transport maritime et aérien de marchandises",
-      "Dédouanement et formalités administratives",
-      "Stockage et gestion d'entrepôts",
-      "Conseil en commerce international",
-      "Assurance transport et marchandises",
-      "Suivi en temps réel des expéditions",
-    ],
-    benefits: [
-      {
-        title: "Réseau mondial",
-        description: "Partenaires dans plus de 50 pays pour une couverture globale",
-      },
-      {
-        title: "Délais optimisés",
-        description: "Solutions express et standard adaptées à vos besoins",
-      },
-      {
-        title: "Tarifs compétitifs",
-        description: "Négociation des meilleurs tarifs grâce à nos volumes",
-      },
-      {
-        title: "Conformité garantie",
-        description: "Respect des réglementations douanières internationales",
-      },
-    ],
-  },
-  agriculture: {
-    title: "Agriculture",
-    subtitle: "Technologies agricoles durables",
-    icon: Leaf,
-    image: agricultureImg,
-    description:
-      "Nous accompagnons les agriculteurs et les entreprises agroalimentaires dans leur transition vers une agriculture moderne et durable. Nos solutions innovantes optimisent les rendements tout en préservant l'environnement.",
-    services: [
-      "Fourniture d'équipements agricoles modernes",
-      "Systèmes d'irrigation intelligents",
-      "Semences et intrants de qualité",
-      "Conseil technique et agronomique",
-      "Solutions de stockage et conservation",
-      "Formation aux nouvelles technologies agricoles",
-    ],
-    benefits: [
-      {
-        title: "Rendements accrus",
-        description: "Augmentation moyenne de 30% des productions",
-      },
-      {
-        title: "Économie d'eau",
-        description: "Systèmes d'irrigation réduisant la consommation de 40%",
-      },
-      {
-        title: "Agriculture durable",
-        description: "Pratiques respectueuses de l'environnement",
-      },
-      {
-        title: "Support continu",
-        description: "Accompagnement technique tout au long de l'année",
-      },
-    ],
-  },
-  "traitement-eau": {
-    title: "Traitement d'eau",
-    subtitle: "Solutions de purification innovantes",
-    icon: Droplets,
-    image: waterTreatmentImg,
-    description:
-      "L'accès à une eau propre est essentiel. Nous proposons des solutions complètes de traitement et de purification d'eau pour les particuliers, les entreprises et les collectivités, garantissant une eau saine et de qualité.",
-    services: [
-      "Stations de traitement d'eau potable",
-      "Systèmes de filtration industrielle",
-      "Traitement des eaux usées",
-      "Dessalement et adoucissement",
-      "Analyse et contrôle qualité de l'eau",
-      "Maintenance et SAV des installations",
-    ],
-    benefits: [
-      {
-        title: "Eau pure garantie",
-        description: "Conformité aux normes internationales de qualité",
-      },
-      {
-        title: "Solutions sur mesure",
-        description: "Systèmes adaptés à chaque besoin et capacité",
-      },
-      {
-        title: "Économies durables",
-        description: "Réduction des coûts à long terme",
-      },
-      {
-        title: "Installation rapide",
-        description: "Mise en service en moins de 2 semaines",
-      },
-    ],
-  },
-};
+const agricultureImages = import.meta.glob('/src/assets/gallery2/*.jpeg', { eager: true, as: 'url' });
 
 const DomainDetail = () => {
   const { slug } = useParams<{ slug: string }>();
-  const domain = slug ? domainData[slug as keyof typeof domainData] : null;
-
-  // Scroll to top on page load
+  let domain: Domain | undefined = slug ? { ...domainData[slug] } : undefined;
+  
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [slug]);
+    if (domain) {
+      document.title = `${domain.title} - Al-Fal Innovation`;
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription) {
+        metaDescription.setAttribute("content", domain.description);
+      }
+    }
+  }, [slug, domain]);
+
+  if (slug === 'agriculture' && domain) {
+    const projectDates = [
+      "Février 2025", "Mars 2025", "Avril 2025", "Mai 2025",
+      "Juin 2025", "Juillet 2025", "Août 2025", "Septembre 2025",
+      "Novembre 2025", "Décembre 2025"
+    ];
+
+    const galleryItems = Object.keys(agricultureImages)
+      .sort((a, b) => {
+        const numA = parseInt(a.match(/(\d+)\.jpeg$/)?.[1] || '0', 10);
+        const numB = parseInt(b.match(/(\d+)\.jpeg$/)?.[1] || '0', 10);
+        return numA - numB;
+      })
+      .map((path, index) => ({
+        image: agricultureImages[path] as string,
+        title: `Projet Agricole ${index + 1} - ${projectDates[index % projectDates.length]}`,
+        description: `Réalisation finalisée en ${projectDates[index % projectDates.length]}. Solution innovante pour l'agriculture durable.`,
+      }));
+
+    const agricultureGallery = {
+      title: 'Nos Réalisations Agricoles',
+      items: galleryItems,
+    };
+
+    domain.galleries = domain.galleries ? [...domain.galleries, agricultureGallery] : [agricultureGallery];
+  }
 
   if (!domain) {
     return (
@@ -201,23 +132,20 @@ const DomainDetail = () => {
               </ul>
             </div>
 
-            <div className="bg-secondary rounded-2xl p-8">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-                Pourquoi Nous Choisir
-              </h2>
-              <div className="grid sm:grid-cols-2 gap-6">
-                {domain.benefits.map((benefit, index) => (
-                  <div key={index} className="bg-card rounded-xl p-5 shadow-soft">
-                    <h3 className="font-semibold text-foreground mb-2">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {benefit.description}
-                    </p>
+            {/* Gallery Section */}
+            {domain.galleries && domain.galleries.length > 0 && (
+              <div className="space-y-16">
+                {domain.galleries.map((gallery) => (
+                  <div key={gallery.title}>
+                    <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
+                      {gallery.title}
+                    </h2>
+                    <ImageGallery items={gallery.items} />
                   </div>
                 ))}
               </div>
-            </div>
+            )}
+
           </div>
 
           {/* CTA */}
@@ -228,13 +156,50 @@ const DomainDetail = () => {
             <p className="text-primary-foreground/80 mb-8 max-w-xl mx-auto">
               Contactez-nous dès maintenant pour discuter de vos besoins et obtenir un devis personnalisé.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/#contact">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link to="/#contact" reloadDocument>
                 <Button variant="heroOutline" size="lg">
                   Demander un devis
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
+              
+              {['export-import', 'agriculture', 'traitement-eau'].includes(slug || '') ? (
+                <>
+                  <a
+                    href={`/${slug}.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={buttonVariants({ variant: "secondary", size: "lg" })}
+                  >
+                    Ouvrir le catalogue
+                    <Eye className="w-4 h-4 ml-2" />
+                  </a>
+                  <a
+                    href={`/${slug}.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={`Catalogue-${slug}.pdf`}
+                    className={buttonVariants({ variant: "secondary", size: "lg" })}
+                  >
+                    Télécharger le catalogue
+                    <Download className="w-4 h-4 ml-2" />
+                  </a>
+                </>
+              ) : (
+                <PDFDownloadLink
+                  document={<CatalogueDocument domain={domain} />}
+                  fileName={`catalogue-${slug}.pdf`}
+                  className={buttonVariants({ variant: "secondary", size: "lg" })}
+                >
+                  {({ loading }) => (
+                    <>
+                      {loading ? 'Génération...' : 'Télécharger le catalogue'}
+                      <Download className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </PDFDownloadLink>
+              )}
             </div>
           </div>
         </div>
