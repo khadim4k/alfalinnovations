@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -12,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Send, MapPin, Phone, Mail, MessageCircle } from "lucide-react";
+import { Send, MapPin, Phone, Mail, MessageCircle, Copy } from "lucide-react";
 import { getGreeting } from "./WhatsAppButton";
 
 const ContactSection = () => {
@@ -27,6 +28,15 @@ const ContactSection = () => {
     message: "",
   });
 
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText("alfalinnovation.sn@outlook.com");
+    toast({
+      title: "Copié !",
+      description: "L'adresse e-mail a été copiée dans le presse-papiers.",
+      duration: 3000,
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -38,26 +48,16 @@ const ContactSection = () => {
       "other": "Autre",
     };
     const greeting = getGreeting();
-
-    if (contactMethod === "whatsapp") {
-      const subject = `Demande de devis via le site : ${domainLabels[formData.domain] || 'Non spécifié'}`;
-      const whatsappMessage = `${greeting},\n\n*${subject}*\n\nJe suis ${formData.name}.\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\n\n${formData.message}`;
-      const whatsappUrl = `https://wa.me/221764410598?text=${encodeURIComponent(whatsappMessage)}`;
-      window.open(whatsappUrl, "_blank");
-      toast({
-        title: "Redirection vers WhatsApp",
-        description: "Votre message est prêt à être envoyé.",
-      });
-    } else { // email
-      const subject = `Demande de devis via le site : ${domainLabels[formData.domain] || 'Non spécifié'}`;
-      const body = `${greeting},\n\nJe suis ${formData.name}.\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\n\n${formData.message}`;
-      const mailtoLink = `mailto:alfalinnovationsn@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailtoLink;
-      toast({
-        title: "Ouverture de votre client de messagerie",
-        description: "Votre message est prêt à être envoyé.",
-      });
-    }
+    
+    // This handler is now only for WhatsApp
+    const subject = `Demande de devis via le site : ${domainLabels[formData.domain] || 'Non spécifié'}`;
+    const whatsappMessage = `${greeting},\n\n*${subject}*\n\nJe suis ${formData.name}.\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\n\n${formData.message}`;
+    const whatsappUrl = `https://wa.me/221764410598?text=${encodeURIComponent(whatsappMessage)}`;
+    window.open(whatsappUrl, "_blank");
+    toast({
+      title: "Redirection vers WhatsApp",
+      description: "Votre message est prêt à être envoyé.",
+    });
 
     setFormData({ name: "", email: "", phone: "", domain: "", message: "" });
     setIsSubmitting(false);
@@ -143,10 +143,12 @@ const ContactSection = () => {
                   <div>
                     <p className="font-medium text-foreground">Email</p>
                     <a
-                      href="mailto:alfalinnovationsn@outlook.com"
+                      href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      alfalinnovationsn@outlook.com
+                      alfalinnovation.sn@outlook.com
                     </a>
                   </div>
                 </div>
@@ -156,12 +158,8 @@ const ContactSection = () => {
 
           {/* Contact Form */}
           <div className="lg:col-span-3">
-            <form
-              onSubmit={handleSubmit}
-              className="bg-card rounded-2xl p-6 md:p-8 shadow-card"
-            >
-              {/* Contact Method Selection */}
-              <div className="mb-6">
+            <div className="bg-card rounded-2xl p-6 md:p-8 shadow-card">
+              <div className="mb-8">
                 <label className="block text-sm font-medium text-foreground mb-3">
                   Comment souhaitez-vous être contacté ?
                 </label>
@@ -193,135 +191,84 @@ const ContactSection = () => {
                 </RadioGroup>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-foreground mb-2"
+              {contactMethod === 'email' ? (
+                <div className="text-center flex flex-col items-center">
+                  <p className="text-muted-foreground mb-6">
+                    Cliquez sur le bouton ci-dessous pour nous envoyer directement un e-mail.
+                  </p>
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
                   >
-                    Prénom et Nom *
-                  </label>
-                  <Input
-                    id="name"
-                    type="text"
-                    required
-                    placeholder="Votre prénom et nom"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="h-12"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
-                    Email *
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    required
-                    placeholder="votre@email.com"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    className="h-12"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
-                    Téléphone *
-                  </label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    required
-                    placeholder="Votre numéro de téléphone"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    className="h-12"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="domain"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
-                    Domaine d'activité *
-                  </label>
-                  <Select
-                    value={formData.domain}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, domain: value })
-                    }
-                    required
-                  >
-                    <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Sélectionnez un domaine" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="export-import">Export & Import</SelectItem>
-                      <SelectItem value="agriculture">Agriculture</SelectItem>
-                      <SelectItem value="water-treatment">Traitement d'eau</SelectItem>
-                      <SelectItem value="other">Autre</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+                    Envoyer un e-mail
+                    <Send className="w-4 h-4 ml-2" />
+                  </a>
 
-              <div className="mb-6">
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-foreground mb-2"
-                >
-                  Message *
-                </label>
-                <Textarea
-                  id="message"
-                  required
-                  placeholder="Décrivez votre projet..."
-                  value={formData.message}
-                  onChange={(e) =>
-                    setFormData({ ...formData, message: e.target.value })
-                  }
-                  className="min-h-[120px] resize-none"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                className={`w-full sm:w-auto ${
-                  contactMethod === "whatsapp" 
-                    ? "bg-[#25D366] hover:bg-[#128C7E] hover:shadow-none" 
-                    : ""
-                }`}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  "Envoi en cours..."
-                ) : contactMethod === "whatsapp" ? (
-                  <>
-                    Envoyer message WhatsApp
-                    <MessageCircle className="w-4 h-4" />
-                  </>
-                ) : (
-                  <>
-                    Envoyer
-                    <Send className="w-4 h-4" />
-                  </>
-                )}
-              </Button>
-            </form>
+                  <div className="mt-6 text-sm text-muted-foreground">
+                    <p>Ou copiez notre adresse e-mail :</p>
+                    <div 
+                      className="mt-2 inline-flex items-center gap-2 bg-secondary p-2 rounded-md cursor-pointer hover:bg-primary/10 transition-colors"
+                      onClick={handleCopyEmail}
+                    >
+                      <span className="font-mono">alfalinnovation.sn@outlook.com</span>
+                      <Copy className="w-4 h-4 text-primary" />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">Prénom et Nom *</label>
+                      <Input id="name" type="text" required placeholder="Votre prénom et nom" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="h-12" />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">Email *</label>
+                      <Input id="email" type="email" required placeholder="votre@email.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="h-12" />
+                    </div>
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">Téléphone *</label>
+                      <Input id="phone" type="tel" required placeholder="Votre numéro de téléphone" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="h-12" />
+                    </div>
+                    <div>
+                      <label htmlFor="domain" className="block text-sm font-medium text-foreground mb-2">Domaine d'activité *</label>
+                      <Select value={formData.domain} onValueChange={(value) => setFormData({ ...formData, domain: value })} required>
+                        <SelectTrigger className="h-12">
+                          <SelectValue placeholder="Sélectionnez un domaine" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="export-import">Export & Import</SelectItem>
+                          <SelectItem value="agriculture">Agriculture</SelectItem>
+                          <SelectItem value="water-treatment">Traitement d'eau</SelectItem>
+                          <SelectItem value="other">Autre</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="mb-6">
+                    <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">Message *</label>
+                    <Textarea id="message" required placeholder="Décrivez votre projet..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="min-h-[120px] resize-none" />
+                  </div>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full sm:w-auto bg-[#25D366] hover:bg-[#128C7E] hover:shadow-none"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      "Envoi en cours..."
+                    ) : (
+                      <>
+                        Envoyer via WhatsApp
+                        <MessageCircle className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -35,7 +35,7 @@ const HeroSection = () => {
             style={{ animationDelay: "0.1s" }}
           >
             <span className="text-primary-foreground text-sm font-medium">
-              Votre partenaire de confiance depuis 2010
+              Votre partenaire de confiance 
             </span>
           </div>
 
