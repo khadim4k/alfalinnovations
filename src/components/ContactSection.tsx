@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Send, MapPin, Phone, Mail, MessageCircle } from "lucide-react";
-import { getWhatsAppLink, PHONE_NUMBER, buildWhatsAppMessage, getGreeting } from "./WhatsAppButton";
+import { getGreeting } from "./WhatsAppButton";
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -21,6 +21,8 @@ const ContactSection = () => {
   const [contactMethod, setContactMethod] = useState<"email" | "whatsapp">("email");
   const [formData, setFormData] = useState({
     name: "",
+    email: "",
+    phone: "",
     domain: "",
     message: "",
   });
@@ -29,24 +31,26 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const domainLabels: Record<string, string> = {
+      "export-import": "Export & Import",
+      "agriculture": "Agriculture",
+      "water-treatment": "Traitement d'eau",
+      "other": "Autre",
+    };
+    const greeting = getGreeting();
+
     if (contactMethod === "whatsapp") {
-      const whatsappMessage = buildWhatsAppMessage(formData);
-      const whatsappUrl = getWhatsAppLink(whatsappMessage);
+      const subject = `Demande de devis via le site : ${domainLabels[formData.domain] || 'Non spécifié'}`;
+      const whatsappMessage = `${greeting},\n\n*${subject}*\n\nJe suis ${formData.name}.\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\n\n${formData.message}`;
+      const whatsappUrl = `https://wa.me/221764410598?text=${encodeURIComponent(whatsappMessage)}`;
       window.open(whatsappUrl, "_blank");
       toast({
         title: "Redirection vers WhatsApp",
         description: "Votre message est prêt à être envoyé.",
       });
     } else { // email
-      const domainLabels: Record<string, string> = {
-        "export-import": "Export & Import",
-        "agriculture": "Agriculture",
-        "water-treatment": "Traitement d'eau",
-        "other": "Autre",
-      };
-      const greeting = getGreeting();
       const subject = `Demande de devis via le site : ${domainLabels[formData.domain] || 'Non spécifié'}`;
-      const body = `${greeting},\n\nJe suis ${formData.name}.\n\n${formData.message}`;
+      const body = `${greeting},\n\nJe suis ${formData.name}.\nEmail: ${formData.email}\nTéléphone: ${formData.phone}\n\n${formData.message}`;
       const mailtoLink = `mailto:alfalinnovationsn@outlook.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.location.href = mailtoLink;
       toast({
@@ -55,7 +59,7 @@ const ContactSection = () => {
       });
     }
 
-    setFormData({ name: "", domain: "", message: "" });
+    setFormData({ name: "", email: "", phone: "", domain: "", message: "" });
     setIsSubmitting(false);
   };
 
@@ -122,12 +126,12 @@ const ContactSection = () => {
                   <div>
                     <p className="font-medium text-foreground">WhatsApp</p>
                     <a 
-                      href={getWhatsAppLink()}
+                      href="https://wa.me/221764410598"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-[#25D366] transition-colors"
                     >
-                      {formatPhoneDisplay(PHONE_NUMBER)}
+                      {formatPhoneDisplay("221764410598")}
                     </a>
                   </div>
                 </div>
@@ -211,6 +215,44 @@ const ContactSection = () => {
                 </div>
                 <div>
                   <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
+                    Email *
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    placeholder="votre@email.com"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="h-12"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
+                    Téléphone *
+                  </label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    required
+                    placeholder="Votre numéro de téléphone"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    className="h-12"
+                  />
+                </div>
+                <div>
+                  <label
                     htmlFor="domain"
                     className="block text-sm font-medium text-foreground mb-2"
                   >
@@ -269,7 +311,7 @@ const ContactSection = () => {
                   "Envoi en cours..."
                 ) : contactMethod === "whatsapp" ? (
                   <>
-                    Envoyer via WhatsApp
+                    Envoyer message WhatsApp
                     <MessageCircle className="w-4 h-4" />
                   </>
                 ) : (
