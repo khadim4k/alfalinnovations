@@ -108,11 +108,15 @@ const ContactSection = () => {
                     <p className="font-medium text-foreground">Téléphone</p>
                     <div className="flex flex-col gap-1 text-muted-foreground">
                       <a
-                        href="tel:+221764410598"
+                        href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="hover:text-primary transition-colors"
                       >+221 76 441 05 98</a>
                       <a
-                        href="tel:+221339119579"
+                        href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="hover:text-primary transition-colors"
                       >+221 33 911 95 79</a>
                     </div>
