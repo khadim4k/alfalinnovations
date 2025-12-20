@@ -28,8 +28,10 @@ const ContactSection = () => {
     message: "",
   });
 
+  const emailLink = "https://mail.google.com/mail/u/0/?fs=1&to=alfalinnovationsn@outlook.com&su=Demande+de+devis+via+le+site+web&tf=cm";
+
   const handleCopyEmail = () => {
-    navigator.clipboard.writeText("alfalinnovation.sn@outlook.com");
+    navigator.clipboard.writeText("alfalinnovationsn@outlook.com");
     toast({
       title: "Copié !",
       description: "L'adresse e-mail a été copiée dans le presse-papiers.",
@@ -108,15 +110,11 @@ const ContactSection = () => {
                     <p className="font-medium text-foreground">Téléphone</p>
                     <div className="flex flex-col gap-1 text-muted-foreground">
                       <a
-                        href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="tel:+221764410598"
                         className="hover:text-primary transition-colors"
                       >+221 76 441 05 98</a>
                       <a
-                        href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href="tel:+221339119579"
                         className="hover:text-primary transition-colors"
                       >+221 33 911 95 79</a>
                     </div>
@@ -147,12 +145,12 @@ const ContactSection = () => {
                   <div>
                     <p className="font-medium text-foreground">Email</p>
                     <a
-                      href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
+                      href={emailLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      alfalinnovation.sn@outlook.com
+                      alfalinnovationsn@outlook.com
                     </a>
                   </div>
                 </div>
@@ -169,7 +167,11 @@ const ContactSection = () => {
                 </label>
                 <RadioGroup
                   value={contactMethod}
-                  onValueChange={(value) => setContactMethod(value as "email" | "whatsapp")}
+                  onValueChange={(value) => {
+                    if (value === 'email' || value === 'whatsapp') {
+                      setContactMethod(value);
+                    }
+                  }}
                   className="flex flex-wrap gap-4"
                 >
                   <div className="flex items-center space-x-2">
@@ -201,7 +203,7 @@ const ContactSection = () => {
                     Cliquez sur le bouton ci-dessous pour nous envoyer directement un e-mail.
                   </p>
                   <a
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovation.sn@outlook.com"
+                    href={emailLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}
@@ -213,11 +215,13 @@ const ContactSection = () => {
                   <div className="mt-6 text-sm text-muted-foreground">
                     <p>Ou copiez notre adresse e-mail :</p>
                     <div 
-                      className="mt-2 inline-flex items-center gap-2 bg-secondary p-2 rounded-md cursor-pointer hover:bg-primary/10 transition-colors"
+                      className="mt-2 inline-flex items-center gap-2 bg-secondary p-2 rounded-md cursor-pointer hover:bg-primary/10 transition-colors group"
                       onClick={handleCopyEmail}
                     >
-                      <span className="font-mono">alfalinnovation.sn@outlook.com</span>
-                      <Copy className="w-4 h-4 text-primary" />
+                      <a href={emailLink} target="_blank" rel="noopener noreferrer" className="font-mono" onClick={(e) => e.stopPropagation()}>
+                        alfalinnovationsn@outlook.com
+                      </a>
+                      <Copy className="w-4 h-4 text-primary group-hover:text-foreground" />
                     </div>
                   </div>
                 </div>
