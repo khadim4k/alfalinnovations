@@ -28,7 +28,7 @@ const ContactSection = () => {
     message: "",
   });
 
-  const emailLink = "https://mail.google.com/mail/u/0/?fs=1&to=alfalinnovationsn@outlook.com&su=Demande+de+devis+via+le+site+web&tf=cm";
+  const emailLink = "https://mail.google.com/mail/?view=cm&fs=1&to=alfalinnovationsn@outlook.com&su=Demande+de+devis+via+le+site+web";
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("alfalinnovationsn@outlook.com");
