@@ -282,7 +282,7 @@ const ContactSection = () => {
 
         <div className="mt-16 pt-8 border-t border-primary/10 text-center">
           <p className="text-sm text-muted-foreground">
-            Plateforme développée par <span className="text-primary font-semibold">Khadim Guèye</span> — Approuvé & Validé
+            Plateforme développée par <span className="text-primary font-semibold">Khadim Guèye (khadim4k)</span> — Approuvé & Validé
           </p>
         </div>
       </div>
